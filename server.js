@@ -9,7 +9,8 @@ function* roleDistributor(){
   var index;
 
   while(roles.length > 0){
-    index = Math.floor(Math.random * roles.length);
+    index = Math.floor(Math.random() * roles.length);
+    console.log(roles);
     yield roles.splice(index, 1);
   }
 }
