@@ -15,6 +15,10 @@ socket.on ('user-connected', name=>{
     appendMessage(`${name} connected`)
 })
 
+socket.on ('role-given', data=>{
+    appendMessage(`${data.name}'s role is ${data.role}`)
+})
+
 socket.on ('user-disconnected', name=>{
     appendMessage(`${name} disconnected`)
 })
