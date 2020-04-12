@@ -1,3 +1,4 @@
+/* Body */
 body {
   padding: 0;
   margin: 0;
@@ -5,6 +6,23 @@ body {
   justify-content: center;
 }
 
+/* Form Containers */
+#game-functions{
+  width: 80%;
+  max-width: 1200px;
+}
+
+#send-container {
+  position: fixed;
+  padding-bottom: 30px;
+  bottom: 0;
+  background-color: white;
+  max-width: 1200px;
+  width: 80%;
+  display: flex;
+}
+
+/* Chat Lines */
 #message-container {
   width: 80%;
   max-width: 1200px;
@@ -19,16 +37,12 @@ body {
   background-color: #FFF;
 }
 
-#send-container {
-  position: fixed;
-  padding-bottom: 30px;
-  bottom: 0;
-  background-color: white;
-  max-width: 1200px;
-  width: 80%;
-  display: flex;
-}
-
+/* User Input : Chat */
 #message-input {
   flex-grow: 1;
 }
+
+/* User Input: Button */
+/* #start-game{
+  align-items: center;
+} */
