@@ -15,12 +15,21 @@ socket.on ('user-connected', name=>{
     appendMessage(`${name} connected`)
 })
 
-socket.on ('role-given', data=>{
-    appendMessage(`${data.name}'s role is ${data.role}`)
+socket.on ('role-given', role=>{
+    appendMessage(`Your role is ${role}`)
+})
+
+socket.on ('test', e=>{
+    appendMessage(`Testing`)
 })
 
 socket.on ('user-disconnected', name=>{
     appendMessage(`${name} disconnected`)
+})
+
+document.getElementById('game-functions').addEventListener('submit', e=> {
+  e.preventDefault()
+  socket.emit('start-game')
 })
 
 messageForm.addEventListener('submit', e=> {
