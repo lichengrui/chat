@@ -6,27 +6,37 @@ body {
   justify-content: center;
 }
 
-/* Form Containers */
-#game-functions{
+/* Containers */
+.box-container{
   width: 80%;
   max-width: 1200px;
+}
+
+.chat-container{
+  margin-top: 35px;
+  height: 85vh;
+  overflow: auto;
+}
+
+/* Form Containers */
+#game-functions{
+  background-color: white;
+  text-align: center;
+  margin: 0 10% 0 10%;
 }
 
 #send-container {
-  position: fixed;
-  padding-bottom: 30px;
-  bottom: 0;
   background-color: white;
-  max-width: 1200px;
-  width: 80%;
+  bottom: 30px;
   display: flex;
+  position: fixed;
 }
 
 /* Chat Lines */
-#message-container {
+/* #message-container {
   width: 80%;
   max-width: 1200px;
-}
+} */
 
 #message-container div {
   background-color: #CCC;
