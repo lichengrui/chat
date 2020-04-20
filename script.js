@@ -27,12 +27,12 @@ socket.on ('user-disconnected', name=>{
     appendMessage(`${name} disconnected`)
 })
 
-document.getElementById('game-functions').addEventListener('submit', e=> {
+document.getElementById('game-functions').addEventListener('click', e=> {
   e.preventDefault()
   socket.emit('start-game')
 })
 
-messageForm.addEventListener('submit', e=> {
+messageForm.addEventListener('click', e=> {
     e.preventDefault()
     const message = messageInput.value
     appendMessage(`You: ${message}`)
