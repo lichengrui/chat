@@ -32,7 +32,7 @@ document.getElementById('game-functions').addEventListener('click', e=> {
   socket.emit('start-game')
 })
 
-messageForm.addEventListener('click', e=> {
+messageForm.addEventListener('submit', e=> {
     e.preventDefault()
     const message = messageInput.value
     appendMessage(`You: ${message}`)
