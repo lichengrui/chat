@@ -1,3 +1,8 @@
+/*
+Function: shuffle
+  Inputs(1): an array
+  Output(1): shuffled array
+*/
 function shuffle(a) {
   for (let i = a.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -6,6 +11,11 @@ function shuffle(a) {
   return a;
 }
 
+/*
+Function: role_assign
+  Inputs(1): integer of number of players
+  Output(1): shuffled roles with (input)+3 roles with the last three being cards on the table
+*/
 function role_assign(n) {
   var Roles = ["Villager","Werewolf","Seer","Robber","Troublemaker","Tanner","Drunk","Hunter","Mason","Insomniac","Minion"]
   var dist = []
@@ -43,9 +53,16 @@ function role_assign(n) {
       list.push(Roles[i])
     } 
   } 
-  return shuffle(list);   // The function returns the product of p1 and p2
+  return shuffle(list);   
 }
 
+/*
+Function: role_assign
+  Inputs(2): 
+    1. roles from function role_assign
+    2. User inputs for people and their respective roles. Length should be 3 less than roles and -1 for roles that don't have inputs
+  Output(1): shuffled roles with (input)+3 roleswith the last three being cards on the table
+*/
 function one_night(roles,inputs){
   var original_roles = roles.slice()
   var output = Array(inputs.length).fill("")
@@ -116,12 +133,15 @@ function one_night(roles,inputs){
         break
     }
   }
-  
- 
-  return;
+  return output;
 }
  
- function vote(votes){
+/*
+Function: role_assign
+  Inputs(1): User votes as integers
+  Output(1): return array of people voted
+*/
+function vote(votes){
   tally = Array(votes.length).fill(0);
   max = 0
   results=[]
