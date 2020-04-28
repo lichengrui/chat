@@ -46,7 +46,7 @@ function role_assign(n) {
   return shuffle(list);   // The function returns the product of p1 and p2
 }
 
-function fuck(roles,inputs){
+function one_night(roles,inputs){
   var original_roles = roles.slice()
   var output = Array(inputs.length).fill("")
   var temp = 0
@@ -117,30 +117,26 @@ function fuck(roles,inputs){
     }
   }
   
-  console.log(output)
-  console.log(roles)
-  console.log(werewolf)
-  console.log(mason)
+ 
   return;
- }
+}
  
  function vote(votes){
   tally = Array(votes.length).fill(0);
   max = 0
-  result=[]
+  results=[]
   for(i = 0; i<votes.length;i++){
     tally[votes[i]] += 1;
   }
   for(i = 0; i<tally.length;i++){
     if(tally[i]>max){
-    	max = results[i]
+    	max = tally[i]
     }
   }
   for(i = 0; i<tally.length;i++){
-    if(tally[i]==max){
+    if(tally[i]==max && max > 1){
     	results.push(i)
     }
   }
   return results;
 }
- 
