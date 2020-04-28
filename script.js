@@ -1,7 +1,9 @@
 const socket = io('http://localhost:3000')
+const gameStart = document.getElementById("start-game")
+const messageForm = document.getElementById("user-chat-input")
+const sendButton = document.getElementById("send-button")
+const messageInput = document.getElementById("message-input")
 const messageContainer = document.getElementById('message-container')
-const messageForm = document.getElementById('send-container')
-const messageInput = document.getElementById('message-input')
 
 const name = prompt('What is your name?')
 appendMessage('You Joined')
@@ -27,7 +29,7 @@ socket.on ('user-disconnected', name=>{
     appendMessage(`${name} disconnected`)
 })
 
-document.getElementById('game-functions').addEventListener('click', e=> {
+gameStart.addEventListener('click', e=> {
   e.preventDefault()
   socket.emit('start-game')
 })
@@ -40,7 +42,7 @@ messageForm.addEventListener('submit', e=> {
     messageInput.value = ''
 })
 
-document.getElementById('send-button').addEventListener('click', e=> {
+sendButton.addEventListener('click', e=> {
     e.preventDefault()
     const message = messageInput.value
     appendMessage(`You: ${message}`)
@@ -52,4 +54,10 @@ function appendMessage(message) {
     const messageElement = document.createElement('div')
     messageElement.innerText = message
     messageContainer.append(messageElement)
+    updateScroll();
+}
+
+function updateScroll(){
+  var element = document.querySelector(".chat-container");
+  element.scrollTop = element.scrollHeight;
 }
