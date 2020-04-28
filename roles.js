@@ -59,14 +59,14 @@ function role_assign(n) {
 /*******************************************************************
 Function: role_assign
   Inputs(2): 
-    1. roles - from function role_assign
+    1. original_roles - from function role_assign
     2. inputs - User inputs for people and their respective roles. Length should be 3 less than roles and -1 for roles that don't have inputs
   Output(2): 
     1. Output - String that each player sees. Should be length of "inputs"
     2. roles - everyone's new roles
 *******************************************************************/
-function one_night(roles,inputs){
-  var original_roles = roles.slice()
+function one_night(original_roles,inputs){
+  var roles = original_roles.slice()
   var output = Array(inputs.length).fill("")
   var temp = 0
   var werewolf = []
@@ -162,3 +162,5 @@ function vote(votes){
   }
   return results;
 }
+
+
