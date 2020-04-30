@@ -29,6 +29,10 @@ function role_assign(n) {
   */
   var dist = []
   var list = []
+  var shuffled_list = []
+  var output_roles = []
+  var output_directions = []
+  var output_needed_inputs = []
   switch(n) {
     case 3:
       dist = [1,2,1,1,1,0,0,0,0,0,0]
@@ -62,7 +66,13 @@ function role_assign(n) {
       list.push([Roles[i],directions[i],needed_inputs[i]])
     } 
   } 
-  return shuffle(list);
+  shuffled_list = shuffle(list)
+  for (i = 0; i < shuffled_list.length; i++) {
+    output_roles.push(shuffled_list[i][0])
+    output_directions.push(shuffled_list[i][1])
+    output_needed_inputs.push(shuffled_list[i][2])
+  } 
+  return [output_roles,output_directions,output_needed_inputs];
 }
 
 /*******************************************************************
