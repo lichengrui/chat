@@ -18,6 +18,15 @@ Function: role_assign
 *******************************************************************/
 function role_assign(n) {
   var Roles = ["Villager","Werewolf","Seer","Robber","Troublemaker","Tanner","Drunk","Hunter","Mason","Insomniac","Minion"]
+  var directions = ["Villagers do nothing at night","Werewolfs will know who the other werewolfs are at night", "Seers can choose two unassigned roles or another person's role to look at","Robber has to switch out their own role with another person's","Troublemaker switches two people's roles","Tanner's role is to die", "Drunk has to switch out their own role with another role in the middle", "There is another Mason in the village, you will know who it is", "Insomiac will have the opportunity to check their own role at the end of the night", "Minion will know who all of the werewolves are"]
+  var needed_inputs = [0,0,3,1,2,0,4,0,0,0,0]
+  /*
+    For Needed Inputs:
+      1: One of the other assigned roles
+      2: Two of the other assigned roles
+      3: One assigned role OR Two unassigned roles
+      4: One unassigned role
+  */
   var dist = []
   var list = []
   switch(n) {
@@ -50,10 +59,10 @@ function role_assign(n) {
   } 
   for (i = 0; i < dist.length; i++) {
     for (j = 0; j < dist[i]; j++) {
-      list.push(Roles[i])
+      list.push([Roles[i],directions[i],needed_inputs[i]])
     } 
   } 
-  return shuffle(list);   
+  return shuffle(list);
 }
 
 /*******************************************************************
@@ -162,5 +171,3 @@ function vote(votes){
   }
   return results;
 }
-
-
