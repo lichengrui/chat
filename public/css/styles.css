@@ -87,3 +87,19 @@ body {
 #message-container div:nth-child(2n) {
   background-color: #FFF;
 }
+
+/* Player List */
+.player-list{
+  display: table-cell;
+  height: 40vh;
+  width: 40vw;
+}
+
+#player-container div {
+  background-color: #CCC;
+  padding: 5px;
+}
+
+#player-container div:nth-child(2n) {
+  background-color: #FFF;
+}
