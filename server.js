@@ -8,6 +8,8 @@ const io = require('socket.io')(http)
 const sockets = {};
 var roles = [];
 
+var playerResponseNum;
+
 app.use(express.static("public"));
 
 app.get('/', (req, res) => {
@@ -25,9 +27,12 @@ io.on('connection', socket => {
         socket.broadcast.emit('chat-message', {message: message, name: sockets[socket.id]['name']});
     })
     socket.on('start-game', () =>{
+        playerResponseNum = 0;
+
         var socketIdArray = Object.getOwnPropertyNames(sockets);
 
         var roleAssignArray = roleAssign(socketIdArray.length);
+        roles = roleAssignArray[0];
         var roleArray = roleAssignArray[0];
         var messageArray = roleAssignArray[1];
         var inputArray = roleAssignArray[2];
@@ -119,14 +124,63 @@ io.on('connection', socket => {
             clearInterval(timer);
             console.log('60 seconds have passed.');
             io.emit('retrieve-vote');
-          }, 60000);
+          }, 10000);
     })
     socket.on('vote', data =>{
+        playerResponseNum++;
+
         user = sockets[socket['id']];
         console.log('playerVote :' + data.playerVote);
         console.log('cardVote :' + data.cardVote);
         user['playerVote'] = data.playerVote;
         user['cardVote'] = data.cardVote;
+
+        console.log(user);
+
+        var socketIdArray = Object.getOwnPropertyNames(sockets);
+
+        if(playerResponseNum == socketIdArray.length){
+          var roleArray = [];
+          var inputArray = [];
+          var nameArray = [];
+
+          console.log(socketIdArray);
+          for(var i = 0; i < socketIdArray.length; i++){
+            var currentUser = sockets[socketIdArray[i]];
+
+            console.log(currentUser['role']);
+            roleArray.push(currentUser['role']);
+            inputArray.push([currentUser['playerVote'], currentUser['cardVote']]);
+            nameArray.push(currentUser['name']);
+          }
+
+          var oneNightArray = oneNight(roles, inputArray, nameArray);
+          console.log(oneNightArray);
+          var messageArray = oneNightArray[0];
+          var roleArray = oneNightArray[1];
+
+          console.log(socketIdArray);
+          for(var i = 0; i < socketIdArray.length; i++){
+            currentUser = sockets[socketIdArray[i]];
+            currentUser['role'] = roleArray[i];
+
+            io.to(socketIdArray[i]).emit('chat-message', {message: messageArray[i], name: 'System'});
+          }
+
+          var timer = setInterval( () => {
+            clockTimer++;
+            console.log(clockTimer);
+            io.emit('timer', {clockTimer: clockTimer, done: false});
+          }, 1000);
+
+          setTimeout( () => {
+            clockTimer++;
+            io.emit('timer', {clockTimer: clockTimer, done: true});
+            clearInterval(timer);
+            console.log('60 seconds have passed.');
+            io.emit('retrieve-actual-vote');
+          }, 10000);
+        }
     })
     socket.on('disconnect', () =>{
         console.log(sockets);
@@ -204,4 +258,79 @@ function shuffle(a) {
       [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+}
+
+function oneNight(original_roles,inputs, names){
+  var roles = original_roles.slice()
+  var output = Array(inputs.length).fill("")
+  var temp = 0
+  var werewolf = []
+  var mason = []
+  var string = ""
+  for(i = 0; i<inputs.length;i++){
+    if(original_roles[i]=="Robber"){
+      roles[i] = roles[inputs[i][0][0]]
+      roles[inputs[i][0][0]] = "Robber"
+      //console.log(inputs[i][0][0])
+      output[i]=`You have changed your roles with ${names[inputs[i][0][0]]}`
+    }else if(original_roles[i]=="Werewolf"){
+      werewolf.push(names[i])
+    }else if(original_roles[i]=="Mason"){
+      mason.push(names[i])
+    }
+  }
+    for(i = 0; i<inputs.length;i++){
+    switch(original_roles[i]) {
+      case "Villager":
+        output[i]="You're a lazy fuck that didn't do anything but masturbate at night"
+        break
+      case "Werewolf":
+        string = "The Werewolves are: "
+        output[i]= string.concat(werewolf.toString())
+        break
+      case "Minion":
+        string = "The Werewolves are: "
+        output[i]= string.concat(werewolf.toString())
+        break
+      case "Seer":
+        if(inputs[i][1][0] != null){
+          output[i] = `The role of ${names[inputs[i][0][0]]} is ${roles[inputs[i][0][0]]} and The role of ${names[inputs[i][0][1]]} is ${roles[inputs[i][0][1]]}`
+        }else if(inputs[i][0][0] != null){
+          output[i] = `The role of ${names[inputs[i][1][0]]} is ${original_roles[inputs[i][1][0]]}`
+        }else{
+          console.log("Seer didn't have inputs?")
+        }
+        break
+      case "Troublemaker":
+        temp = roles[inputs[i][0][0]]
+        roles[inputs[i][0][0]] = roles[inputs[i][0][1]]
+        roles[inputs[i][0][1]] = temp
+        output[i]=`Roles ${names[inputs[i][0][0]]} and ${names[inputs[i][0][1]]} have been changed`
+        break
+      case "Tanner":
+        output[i]="Time to die"
+        break
+      case "Drunk":
+        roles[i] = roles[inputs[i][1][0]]
+        roles[inputs[i]] = "Drunk"
+        output[i]="You have no idea what the fuck you are"
+        break
+      case "Hunter":
+        output[i]="Wow, a hunter that's too scared to hunt at night"
+        break
+      case "Mason":
+        string = "The Masons are: "
+        output[i]= string.concat(mason.toString())
+        break
+    }
+  }
+
+  for(i = 0; i<inputs.length;i++){
+    switch(original_roles[i]) {
+      case "Insomniac":
+        output[i]=`Your role is ${roles[i]}`
+        break
+    }
+  }
+  return [output,roles];
 }

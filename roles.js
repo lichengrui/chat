@@ -60,27 +60,27 @@ function role_assign(n) {
       break;
     default:
       // code block
-  } 
+  }
   for (i = 0; i < dist.length; i++) {
     for (j = 0; j < dist[i]; j++) {
       list.push([Roles[i],directions[i],needed_inputs[i]])
-    } 
-  } 
+    }
+  }
   shuffled_list = shuffle(list)
   for (i = 0; i < shuffled_list.length; i++) {
     output_roles.push(shuffled_list[i][0])
     output_directions.push(shuffled_list[i][1])
     output_needed_inputs.push(shuffled_list[i][2])
-  } 
+  }
   return [output_roles,output_directions,output_needed_inputs];
 }
 
 /*******************************************************************
 Function: role_assign
-  Inputs(2): 
+  Inputs(2):
     1. original_roles - from function role_assign
     2. inputs - User inputs for people and their respective roles. Length should be 3 less than roles and -1 for roles that don't have inputs
-  Output(2): 
+  Output(2):
     1. Output - String that each player sees. Should be length of "inputs"
     2. roles - everyone's new roles
 *******************************************************************/
@@ -91,7 +91,7 @@ function one_night(original_roles,inputs){
   var werewolf = []
   var mason = []
   var string = ""
-  for(i = 0; i<inputs.length;i++){ 
+  for(i = 0; i<inputs.length;i++){
     if(original_roles[i]=="Robber"){
       roles[i] = roles[inputs[i][0][0]]
       roles[inputs[i][0][0]] = "Robber"
@@ -148,7 +148,7 @@ function one_night(original_roles,inputs){
         break
     }
   }
-  
+
   for(i = 0; i<inputs.length;i++){
     switch(original_roles[i]) {
       case "Insomniac":
@@ -158,13 +158,13 @@ function one_night(original_roles,inputs){
   }
   return output,roles;
 }
- 
+
 /*******************************************************************
 Function: role_assign
   Inputs(1): User votes as integers
   Output(1): return array of people voted
 *******************************************************************/
-function vote(votes){
+function vote(votes, names){
   tally = Array(votes.length).fill(0);
   max = 0
   results=[]
@@ -178,7 +178,7 @@ function vote(votes){
   }
   for(i = 0; i<tally.length;i++){
     if(tally[i]==max && max > 1){
-    	results.push(i)
+    	results.push(names[i])
     }
   }
   return results;

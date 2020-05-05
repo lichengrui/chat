@@ -131,7 +131,7 @@ socket.on ('create-button', data => {
                 appendMessage('System: You picked ' + buttonNumber);
                 cardVote.push(buttonNumber);
               }
-              
+
               break;
 
             default:
@@ -151,10 +151,21 @@ socket.on('timer', data => {
     if(data.done){
       gameStart.classList.remove("btn-outline-dark");
       gameStart.classList.add("btn-danger");
+    }else{
+      gameStart.classList.remove("btn-danger");
+      gameStart.classList.add("btn-outline-dark");
     }
 })
 
 socket.on('retrieve-vote', () => {
+    for(var i = 0; i < playerVote.length; i++){
+      playerVote[i] = playerVote[i] - 1;
+    }
+
+    for(i = 0; i < cardVote.length; i++){
+      cardVote[i] = cardVote[i] - 1;
+    }
+
     socket.emit('vote', {playerVote: playerVote, cardVote: cardVote});
 })
 
