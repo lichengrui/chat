@@ -1,0 +1,105 @@
+/* Body */
+body {
+  padding: 0;
+  margin: 0;
+}
+
+/* Containers */
+.general-menu{
+  top: 0;
+  height: 6vh;
+  text-align: center;
+  width: 100vw;
+}
+
+.game-info{
+  display: flex;
+  height: 40vh;
+  margin-top: 4vh;
+  width: 100vw;
+}
+
+.role-list{
+  border-color: black;
+  border: 1px;
+  height: 40vh;
+  padding: 1vh, 1vw, 1vh, 1vw;
+  width: 30vw;
+}
+
+.role-info{
+  height: 40vh;
+  margin-left: auto;
+  right: 0;
+  width: 30vw;
+}
+
+.player-menu{
+  height: 40vh;
+  margin-top: 10vh;
+  width: 100vw;
+}
+
+.player-list{
+}
+
+/* General Menu */
+.general-options{
+  padding: 0.25vh 0 0 0;
+}
+
+/* Chat */
+.chat{
+  display: table-cell;
+  height: 40vh;
+  vertical-align: bottom;
+  width: 60vw;
+}
+
+.chat-container{
+  height: 34vh;
+  overflow: auto;
+}
+
+.send-container{
+  align-items: center;
+  /* display: flex; */
+  height: 6vh;
+  /* justify-content: center; */
+  width: 100%;
+}
+
+.send-input-container{
+  /* display: flex;
+  justify-content: center; */
+}
+
+.chat-input{
+  height: 100%;
+  width: 85%;
+}
+
+#message-container div {
+  background-color: #CCC;
+  padding: 5px;
+}
+
+#message-container div:nth-child(2n) {
+  background-color: #FFF;
+}
+
+/* Player List */
+.player-list{
+  display: table-cell;
+  height: 40vh;
+  width: 40vw;
+}
+
+#player-container div {
+  background-color: #CCC;
+  padding: 5px;
+}
+
+#player-container div:nth-child(2n) {
+  background-color: #FFF;
+}
