@@ -25,7 +25,6 @@ io.on('connection', socket => {
         socket.broadcast.emit('chat-message', {message: message, name: sockets[socket.id]['name']});
     })
     socket.on('start-game', () =>{
-        var playerNum = 1;
         var socketIdArray = Object.getOwnPropertyNames(sockets);
 
         var roleAssignArray = roleAssign(socketIdArray.length);
@@ -42,46 +41,92 @@ io.on('connection', socket => {
 
         var playerNumArray = [];
         var nameArray = [];
+        var user;
 
         for(var i = 0; i < socketIdArray.length; i++){
-          var user = sockets[socketIdArray[i]];
+          user = sockets[socketIdArray[i]];
           console.log(user);
-          user['playerNum'] = playerNum;
-          user['role'] = roleArray[playerNum];
-          playerNumArray.push(playerNum);
-          playerNum++;
+          user['playerNum'] = i + 1;
+          user['role'] = roleArray[i];
+          playerNumArray.push(i + 1);
           nameArray.push(user['name']);
         }
 
-        for(i = playerNum; i <= socketIdArray.length + 3; i++){
+        for(i = i + 1; i <= socketIdArray.length + 3; i++){
           playerNumArray.push(i);
           nameArray.push('Card');
         }
 
-        For Needed Inputs:
-          1: One of the other assigned roles
-          2: Two of the other assigned roles
-          3: One assigned role OR Two unassigned roles
-          4: One unassigned role
+        // For Needed Inputs:
+        //   1: One of the other assigned roles
+        //   2: Two of the other assigned roles
+        //   3: One assigned role OR Two unassigned roles
+        //   4: One unassigned role
 
-        for(i = 0; i < socketIdArray.length; i++){
-          console.log(i);
-          console.log(socketIdArray[i]);
-          io.to(socketIdArray[i]).emit('player-list', {playerNumArray: playerNumArray, nameArray: nameArray});
-          io.to(socketIdArray[i]).emit('chat-message', {message: messageArray[i], name: 'System'});
+          for(i = 0; i < socketIdArray.length; i++){
+            console.log('i: ' + i);
+            io.to(socketIdArray[i]).emit('player-list', {playerNumArray: playerNumArray, nameArray: nameArray});
+            io.to(socketIdArray[i]).emit('chat-message', {message: messageArray[i], name: 'System'});
 
-          var buttonArray = [];
+            var buttonArray = [];
+            var buttonChoices = [];
+            var numButtons;
 
-          for(var numButtons = 0; numButtons < inputArray[i]; numButtons++){
-            buttonArray.push(numButtons);
+            console.log('Input: ' + inputArray[i]);
+            switch(inputArray[i]){
+              case 1:
+                for(numButtons = 0; numButtons < socketIdArray.length; numButtons++){
+                  buttonArray.push(numButtons);
+                }
+                buttonChoices = [1, 0];
+                break;
+              case 2:
+                for(numButtons = 0; numButtons < socketIdArray.length; numButtons++){
+                  buttonArray.push(numButtons);
+                }
+                buttonChoices = [2, 0];
+                break;
+              case 3:
+                for(numButtons = 0; numButtons < socketIdArray.length + 3; numButtons++){
+                  buttonArray.push(numButtons);
+                }
+                buttonChoices = [1, 2];
+                break;
+              case 4:
+                for(numButtons = socketIdArray.length; numButtons < socketIdArray.length + 3; numButtons++){
+                  buttonArray.push(numButtons);
+                }
+                buttonChoices = [0, 1];
+                break;
+            }
+
+            console.log(buttonArray, buttonChoices);
+
+            io.to(socketIdArray[i]).emit('create-button', {buttonArray: buttonArray, buttonChoices: buttonChoices});
           }
 
-          io.to(socketIdArray[i]).emit('create-button', buttonArray);
-        }
-    })
-    socket.on('vote', () =>{
-        var socketIdArray = Object.getOwnPropertyNames(sockets);
+          var clockTimer = 0;
 
+          var timer = setInterval( () => {
+            clockTimer++;
+            console.log(clockTimer);
+            io.emit('timer', {clockTimer: clockTimer, done: false});
+          }, 1000)
+
+          setTimeout( () => {
+            clockTimer++;
+            io.emit('timer', {clockTimer: clockTimer, done: true});
+            clearInterval(timer);
+            console.log('60 seconds have passed.');
+            io.emit('retrieve-vote');
+          }, 60000);
+    })
+    socket.on('vote', data =>{
+        user = sockets[socket['id']];
+        console.log('playerVote :' + data.playerVote);
+        console.log('cardVote :' + data.cardVote);
+        user['playerVote'] = data.playerVote;
+        user['cardVote'] = data.cardVote;
     })
     socket.on('disconnect', () =>{
         console.log(sockets);
