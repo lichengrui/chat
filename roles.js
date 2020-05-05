@@ -93,10 +93,10 @@ function one_night(original_roles,inputs){
   var string = ""
   for(i = 0; i<inputs.length;i++){ 
     if(original_roles[i]=="Robber"){
-      roles[i] = roles[inputs[i]]
-      roles[inputs[i]] = "Robber"
-      console.log(inputs[i])
-      output[i]=`You have changed your roles with ${inputs[i]}`
+      roles[i] = roles[inputs[i][0][0]]
+      roles[inputs[i][0][0]] = "Robber"
+      //console.log(inputs[i][0][0])
+      output[i]=`You have changed your roles with ${inputs[i][0][0]}`
     }else if(original_roles[i]=="Werewolf"){
       werewolf.push(i)
     }else if(original_roles[i]=="Mason"){
@@ -117,23 +117,25 @@ function one_night(original_roles,inputs){
         output[i]= string.concat(werewolf.toString())
         break
       case "Seer":
-        if(inputs[i].length == 2){
-          output[i] = `The role of (${inputs[i][0]}) is ${roles[inputs[i][0]]} and The role of (${inputs[i][1]}) is ${roles[inputs[i][1]]}`
-        }else if(inputs[i].length == 1){
-          output[i] = `The role of (${inputs[i][0]}) is ${original_roles[inputs[i][0]]}`
+        if(inputs[i][0][0] != null){
+          output[i] = `The role of (${inputs[i][0][0]}) is ${roles[inputs[i][0][0]]} and The role of (${inputs[i][0][1]}) is ${roles[inputs[i][0][1]]}`
+        }else if(inputs[i][1][0] != null){
+          output[i] = `The role of (${inputs[i][1][0]}) is ${original_roles[inputs[i][1][0]]}`
+        }else{
+          console.log("Seer didn't have inputs?")
         }
         break
       case "Troublemaker":
-        temp = roles[inputs[i][0]]
-        roles[inputs[i][0]] = roles[inputs[i][1]]
-        roles[inputs[i][1]] = temp
-        output[i]=`Roles (${inputs[i][0]}) and (${inputs[i][1]}) have been changed`
+        temp = roles[inputs[i][0][0]]
+        roles[inputs[i][0][0]] = roles[inputs[i][0][1]]
+        roles[inputs[i][0][1]] = temp
+        output[i]=`Roles (${inputs[i][0][0]}) and (${inputs[i][0][1]}) have been changed`
         break
       case "Tanner":
         output[i]="Time to die"
         break
       case "Drunk":
-        roles[i] = roles[inputs[i]]
+        roles[i] = roles[inputs[i][1][0]]
         roles[inputs[i]] = "Drunk"
         output[i]="You have no idea what the fuck you are"
         break
