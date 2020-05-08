@@ -27,6 +27,7 @@ io.on('connection', socket => {
         socket.broadcast.emit('chat-message', {message: message, name: sockets[socket.id]['name']});
     })
     socket.on('start-game', () =>{
+        console.log('Server: Start game event received.');
         playerResponseNum = 0;
 
         var socketIdArray = Object.getOwnPropertyNames(sockets);
@@ -127,6 +128,7 @@ io.on('connection', socket => {
           }, 10000);
     })
     socket.on('vote', data =>{
+        console.log('Server: Vote event received.');
         playerResponseNum++;
 
         user = sockets[socket['id']];
@@ -140,6 +142,8 @@ io.on('connection', socket => {
         var socketIdArray = Object.getOwnPropertyNames(sockets);
 
         if(playerResponseNum == socketIdArray.length){
+          playerResponseNum = 0;
+
           var roleArray = [];
           var inputArray = [];
           var nameArray = [];
@@ -160,12 +164,22 @@ io.on('connection', socket => {
           var roleArray = oneNightArray[1];
 
           console.log(socketIdArray);
+          let buttonArray = [];
+          let buttonChoices = [1, 0];
+
+          for(let i = 0; i < socketIdArray.length; i++){
+            buttonArray.push(i);
+          }
+
           for(var i = 0; i < socketIdArray.length; i++){
             currentUser = sockets[socketIdArray[i]];
             currentUser['role'] = roleArray[i];
 
             io.to(socketIdArray[i]).emit('chat-message', {message: messageArray[i], name: 'System'});
+            io.to(socketIdArray[i]).emit('create-button', {buttonArray: buttonArray, buttonChoices: buttonChoices});
           }
+
+          let clockTimer = 0;
 
           var timer = setInterval( () => {
             clockTimer++;
@@ -181,6 +195,51 @@ io.on('connection', socket => {
             io.emit('retrieve-actual-vote');
           }, 10000);
         }
+    })
+    socket.on('final-result', data =>{
+      console.log('Server: Final result event received.');
+      playerResponseNum++;
+
+      user = sockets[socket['id']];
+      console.log('finalVote :' + data.playerVote);
+      user['finalVote'] = data.playerVote;
+
+      console.log(user);
+
+      var socketIdArray = Object.getOwnPropertyNames(sockets);
+
+      if(playerResponseNum == socketIdArray.length){
+        playerResponseNum = 0;
+
+        let inputArray = [];
+        let nameArray = [];
+
+        console.log(socketIdArray);
+        for(var i = 0; i < socketIdArray.length; i++){
+          var currentUser = sockets[socketIdArray[i]];
+
+          inputArray.push(currentUser['finalVote']);
+          nameArray.push(currentUser['name']);
+        }
+
+        var finalResult = vote(inputArray, nameArray);
+        console.log(finalResult);
+
+        if(finalResult.length == 0){
+          io.emit('chat-message', {message: 'No one dies...', name: 'System'});
+        }else{
+          io.emit('chat-message', {message: 'The following people have died...', name: 'System'});
+
+          for(let i = 0; i < finalResult.length; i++){
+            io.emit('chat-message', {message: finalResult[i], name: 'System'});
+          }
+        }
+
+        var oneNightArray = oneNight(roles, inputArray, nameArray);
+        console.log(oneNightArray);
+        var messageArray = oneNightArray[0];
+        var roleArray = oneNightArray[1];
+      }
     })
     socket.on('disconnect', () =>{
         console.log(sockets);
@@ -333,4 +392,24 @@ function oneNight(original_roles,inputs, names){
     }
   }
   return [output,roles];
+}
+
+function vote(votes, names){
+  tally = Array(votes.length).fill(0);
+  max = 0
+  results=[]
+  for(i = 0; i<votes.length;i++){
+    tally[votes[i]] += 1;
+  }
+  for(i = 0; i<tally.length;i++){
+    if(tally[i]>max){
+    	max = tally[i]
+    }
+  }
+  for(i = 0; i<tally.length;i++){
+    if(tally[i]==max && max > 1){
+    	results.push(names[i])
+    }
+  }
+  return results;
 }

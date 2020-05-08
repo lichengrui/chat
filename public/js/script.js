@@ -5,7 +5,7 @@ const sendButton = document.getElementById("send-button")
 const messageInput = document.getElementById("message-input")
 const messageContainer = document.getElementById('message-container')
 const playerContainer = document.getElementById('player-container')
-var voteButton = document.querySelectorAll('voteButton')
+var voteButton = document.querySelectorAll('.voteButton')
 
 const name = prompt('What is your name?')
 appendMessage('You Joined')
@@ -47,6 +47,12 @@ socket.on ('player-list', data => {
 })
 
 socket.on ('create-button', data => {
+    voteButton = document.querySelectorAll('.voteButton');
+    console.log(voteButton);
+    voteButton.forEach(element => {
+      element.parentNode.removeChild(element);
+    })
+
     playerVoteLimit = data.buttonChoices[0];
     cardVoteLimit = data.buttonChoices[1];
     playerVote.length = 0;
@@ -167,6 +173,18 @@ socket.on('retrieve-vote', () => {
     }
 
     socket.emit('vote', {playerVote: playerVote, cardVote: cardVote});
+})
+
+socket.on('retrieve-actual-vote', () => {
+  for(var i = 0; i < playerVote.length; i++){
+    playerVote[i] = playerVote[i] - 1;
+  }
+
+  for(i = 0; i < cardVote.length; i++){
+    cardVote[i] = cardVote[i] - 1;
+  }
+
+  socket.emit('final-result', {playerVote: playerVote});
 })
 
 gameStart.addEventListener('click', e=> {
